@@ -1,0 +1,18 @@
+{
+  "name": "poloniex yen view",
+  "version": "0.0.0",
+  "description": "Add yen column",
+  "manifest_version": 2,
+  "content_scripts": [{
+    "js": [
+      "script.js"
+    ],
+    "matches": [
+      "https://poloniex.com/balances"
+    ],
+    "run_at": "document_start"
+  }],
+  "permissions": [
+    "https://*/*"
+  ]
+}
