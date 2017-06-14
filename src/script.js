@@ -3,6 +3,7 @@ const qsa = selector => document.querySelectorAll(selector);
 
 function floatFormat(number, n) {
   const pow = Math.pow(10, n);
+
   return Math.round(number * pow) / pow;
 }
 
@@ -34,15 +35,15 @@ function initializeTable() {
 
   const btcRateHeader = createElement('th', {
     className: 'name sortable tablesorter-header tablesorter-headerUnSorted',
-    textContent: 'BTC_RATE'
+    textContent: 'BTC Rate'
   });
   const jpyValueHeader = createElement('th', {
     className: 'name sortable tablesorter-header tablesorter-headerUnSorted',
-    textContent: 'JPY value'
+    textContent: 'JPY Value'
   });
   const usdValueHeader = createElement('th', {
     className: 'name sortable tablesorter-header tablesorter-headerUnSorted',
-    textContent: 'USD value'
+    textContent: 'USD Value'
   });
 
   header.insertBefore(btcRateHeader, valueHeader.nextSibling);
@@ -63,9 +64,15 @@ function initializeTable() {
   }
 }
 
+async function fetchJSON(url) {
+  const response = await fetch(url);
+  const json = await response.json();
+
+  return json;
+}
+
 async function renderAllRates() {
-  const response = await fetch('https://poloniex.com/public?command=returnTicker');
-  const rates = await response.json();
+  const rates = await fetchJSON('https://poloniex.com/public?command=returnTicker');
 
   for (const key of Object.keys(rates)) {
     if (key.match(/BTC_/)) {
@@ -77,8 +84,7 @@ async function renderAllRates() {
 }
 
 async function renderAllValues() {
-  const response = await fetch('https://coincheck.com/api/ticker');
-  const data = await response.json();
+  const data = await fetchJSON('https://coincheck.com/api/ticker');
 
   const yenRateValue = data.bid;
   const usdValue = Number(qs('#accountValue_usd').textContent.replace(',', ''));
@@ -96,7 +102,7 @@ async function renderAllValues() {
     const usdValue = tr.querySelector('.usdValue');
     const yenRate = tr.querySelector('.yenRate');
 
-    if (coin == null) {
+    if (coin === null) {
       continue;
     }
 
