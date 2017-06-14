@@ -2,6 +2,13 @@
   "version": "0.3.0",
   "private": true,
   "scripts": {
-    "postversion": "git push && git push --tags"
+    "postversion": "git push && git push --tags",
+    "build": "browserify --outfile app/script.js src/script.js"
+  },
+  "dependencies": {
+    "delay": "^2.0.0"
+  },
+  "devDependencies": {
+    "browserify": "^14.4.0"
   }
 }

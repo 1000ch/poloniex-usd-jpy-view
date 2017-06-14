@@ -1,18 +1,21 @@
 PROJECTNAME="Poloniex Yen View"
 
-all: prelogue archive epilogue
+all: prelogue build archive epilogue
 
 prelogue:
 	@echo ""
 	@echo ">>> $(PROJECTNAME) build started"
 	@echo ""
 
-archive: ./src
-	@zip pyv.zip -r ./src
+build: src
+	@npm run build
+
+archive: ./app/script.js
+	@zip pyv.zip -r ./app
 
 epilogue:
 	@echo ""
 	@echo ">>> $(PROJECTNAME) build has successfully finished"
 	@echo ""
 
-.PHONY: prelogue archive epilogue
+.PHONY: prelogue build archive epilogue

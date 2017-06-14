@@ -1,47 +1,27 @@
-const qs = selector => document.querySelector(selector);
-const qsa = selector => document.querySelectorAll(selector);
-
-function floatFormat(number, n) {
-  const pow = Math.pow(10, n);
-
-  return Math.round(number * pow) / pow;
-}
-
-function separate(number) {
-  return String(number).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,');
-}
-
-function createElement(tagName, properties) {
-  const element = document.createElement(tagName);
-
-  Object.keys(properties).forEach(name => {
-    element[name] = properties[name];
-  });
-
-  return element;
-}
+const delay = require('delay');
+const util = require('./util');
 
 function initializeSummary() {
-  const div = createElement('div', { className: 'supressWrap' });
-  const span = createElement('span', { id: 'accountValue_yen' });
+  const div = util.el('div', { className: 'supressWrap' });
+  const span = util.el('span', { id: 'accountValue_yen' });
 
   div.appendChild(span);
-  qs('.supressWrap').appendChild(div);
+  util.qs('.supressWrap').appendChild(div);
 }
 
 function initializeTable() {
-  const header = qs('tr.header');
-  const valueHeader = qs('tr.header .value');
+  const header = util.qs('tr.header');
+  const valueHeader = util.qs('tr.header .value');
 
-  const btcRateHeader = createElement('th', {
+  const btcRateHeader = util.el('th', {
     className: 'name sortable tablesorter-header tablesorter-headerUnSorted',
     textContent: 'BTC Rate'
   });
-  const jpyValueHeader = createElement('th', {
+  const jpyValueHeader = util.el('th', {
     className: 'name sortable tablesorter-header tablesorter-headerUnSorted',
     textContent: 'JPY Value'
   });
-  const usdValueHeader = createElement('th', {
+  const usdValueHeader = util.el('th', {
     className: 'name sortable tablesorter-header tablesorter-headerUnSorted',
     textContent: 'USD Value'
   });
@@ -50,12 +30,12 @@ function initializeTable() {
   header.insertBefore(jpyValueHeader, valueHeader.nextSibling);
   header.insertBefore(usdValueHeader, valueHeader.nextSibling);
 
-  const cells = qs('#balancesTableBody').querySelectorAll('tr td.value');
+  const cells = util.qs('#balancesTableBody').querySelectorAll('tr td.value');
 
   for (const cell of cells) {
-    const btcRateCell = createElement('td', { className: 'btcRate' });
-    const yenRateCell = createElement('td', { className: 'yenRate' });
-    const usdValueCell = createElement('td', { className: 'usdValue' });
+    const btcRateCell = util.el('td', { className: 'btcRate' });
+    const yenRateCell = util.el('td', { className: 'yenRate' });
+    const usdValueCell = util.el('td', { className: 'usdValue' });
 
     const tr = cell.parentNode;
     tr.insertBefore(btcRateCell, cell.nextSibling);
@@ -76,9 +56,9 @@ async function renderAllRates() {
 
   for (const key of Object.keys(rates)) {
     if (key.match(/BTC_/)) {
-      qs(`#balances_${key.replace('BTC_', '')}`).querySelector('.btcRate').textContent = rates[key]['last'];
+      util.qs(`#balances_${key.replace('BTC_', '')}`).querySelector('.btcRate').textContent = rates[key]['last'];
     } else if (key.match(/USDT_BTC/)) {
-      qs('#balances_USDT').querySelector('.btcRate').textContent = floatFormat(1 / Number(rates[key]['last']), 8);
+      util.qs('#balances_USDT').querySelector('.btcRate').textContent = util.format(1 / Number(rates[key]['last']), 8);
     }
   }
 }
@@ -87,13 +67,13 @@ async function renderAllValues() {
   const data = await fetchJSON('https://coincheck.com/api/ticker');
 
   const yenRateValue = data.bid;
-  const usdValue = Number(qs('#accountValue_usd').textContent.replace(',', ''));
-  const btcValue = Number(qs('#accountValue_btc').textContent);
+  const usdValue = Number(util.qs('#accountValue_usd').textContent.replace(',', ''));
+  const btcValue = Number(util.qs('#accountValue_btc').textContent);
   const usdRateValue = Number(usdValue / btcValue);
 
-  qs('#accountValue_yen').textContent = ` / ¥${separate(floatFormat(Number(btcValue * yenRateValue), 0))} YEN`;
+  util.qs('#accountValue_yen').textContent = ` / ¥${util.separate(util.format(Number(btcValue * yenRateValue), 0))} YEN`;
 
-  const trList = qsa('#balancesTableBody tr');
+  const trList = util.qsa('#balancesTableBody tr');
   for (const tr of trList) {
     const coin = tr.querySelector('.coin');
     const balance = tr.querySelector('.balance');
@@ -114,23 +94,24 @@ async function renderAllValues() {
     const btcRateValue = Number(btcRate.textContent);
     const btcValue = balanceValue * btcRateValue;
 
-    value.textContent = floatFormat(btcValue, 8);
-    usdValue.textContent = `$${floatFormat(btcValue * usdRateValue, 4)}`
-    yenRate.textContent = `¥${separate(floatFormat(btcValue * yenRateValue, 0))}`;
+    value.textContent = util.format(btcValue, 8);
+    usdValue.textContent = `$${util.format(btcValue * usdRateValue, 4)}`
+    yenRate.textContent = `¥${util.separate(util.format(btcValue * yenRateValue, 0))}`;
   }
+}
+
+async function loopRender() {
+  await delay(5000);
+  await renderAllRates();
+  await renderAllValues();
+
+  return loopRender();
 }
 
 async function main() {
   initializeSummary();
   initializeTable();
-
-  setInterval(() => {
-    renderAllRates();
-  }, 5000);
-
-  setInterval(() => {
-    renderAllValues();
-  }, 5000);
+  loopRender();
 }
 
 document.addEventListener('DOMContentLoaded', main);
