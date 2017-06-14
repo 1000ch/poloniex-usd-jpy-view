@@ -1,6 +1,6 @@
 {
   "name": "Poloniex Yen View",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Add \"USD Value\", \"JPY Value\", \"BTC Rate\" columns into Poloniex Balances view.",
   "manifest_version": 2,
   "content_scripts": [{
