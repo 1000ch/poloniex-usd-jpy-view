@@ -13,6 +13,7 @@
     "run_at": "document_start"
   }],
   "permissions": [
-    "https://*/*"
+    "https://coincheck.com/api/ticker",
+    "https://poloniex.com/balances"
   ]
 }
