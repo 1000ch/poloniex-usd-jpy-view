@@ -1,6 +1,6 @@
 {
   "name": "poloniex yen view",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Add yen column",
   "manifest_version": 2,
   "content_scripts": [{
