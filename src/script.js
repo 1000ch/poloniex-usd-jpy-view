@@ -69,15 +69,16 @@ async function renderAllValues() {
   const trList = util.qsa('#balancesTableBody tr');
   for (const tr of trList) {
     const coin = tr.querySelector('.coin');
+
+    if (coin === null) {
+      continue;
+    }
+
     const balance = tr.querySelector('.balance');
     const btcRate = tr.querySelector('.btcRate');
     const value = tr.querySelector('.value');
     const usdValue = tr.querySelector('.usdValue');
     const yenRate = tr.querySelector('.yenRate');
-
-    if (coin === null) {
-      continue;
-    }
 
     if (coin.textContent === 'BTC') {
       btcRate.textContent = 1;
@@ -88,17 +89,19 @@ async function renderAllValues() {
     const btcValue = balanceValue * btcRateValue;
 
     value.textContent = util.format(btcValue, 8);
-    usdValue.textContent = `$${util.format(btcValue * usdRateValue, 4)}`
+    usdValue.textContent = `$${util.format(btcValue * usdRateValue, 4)}`;
     yenRate.textContent = `¥${util.separate(util.format(btcValue * yenRateValue, 0))}`;
   }
 }
 
 async function loopRender() {
-  await delay(5000);
-  await renderAllRates();
-  await renderAllValues();
-
-  return loopRender();
+  try {
+    await delay(5000);
+    await renderAllRates();
+    await renderAllValues();
+  } finally {
+    return loopRender();
+  }
 }
 
 async function main() {
