@@ -33,14 +33,10 @@ function initializeTable() {
   const cells = util.qs('#balancesTableBody').querySelectorAll('tr td.value');
 
   for (const cell of cells) {
-    const btcRateCell = util.el('td', { className: 'btcRate' });
-    const yenRateCell = util.el('td', { className: 'yenRate' });
-    const usdValueCell = util.el('td', { className: 'usdValue' });
-
     const tr = cell.parentNode;
-    tr.insertBefore(btcRateCell, cell.nextSibling);
-    tr.insertBefore(yenRateCell, cell.nextSibling);
-    tr.insertBefore(usdValueCell, cell.nextSibling);
+    tr.insertBefore(util.el('td', { className: 'btcRate' }), cell.nextSibling);
+    tr.insertBefore(util.el('td', { className: 'yenRate' }), cell.nextSibling);
+    tr.insertBefore(util.el('td', { className: 'usdValue' }), cell.nextSibling);
   }
 }
 
@@ -74,23 +70,17 @@ async function renderAllValues() {
       continue;
     }
 
-    const balance = tr.querySelector('.balance');
-    const btcRate = tr.querySelector('.btcRate');
-    const value = tr.querySelector('.value');
-    const usdValue = tr.querySelector('.usdValue');
-    const yenRate = tr.querySelector('.yenRate');
-
     if (coin.textContent === 'BTC') {
-      btcRate.textContent = 1;
+      tr.querySelector('.btcRate').textContent = 1;
     }
 
-    const balanceValue = Number(balance.textContent);
-    const btcRateValue = Number(btcRate.textContent);
+    const balanceValue = Number(tr.querySelector('.balance').textContent);
+    const btcRateValue = Number(tr.querySelector('.btcRate').textContent);
     const btcValue = balanceValue * btcRateValue;
 
-    value.textContent = util.format(btcValue, 8);
-    usdValue.textContent = `$${util.format(btcValue * usdRateValue, 4)}`;
-    yenRate.textContent = `¥${util.separate(util.format(btcValue * yenRateValue, 0))}`;
+    tr.querySelector('.value').textContent = util.format(btcValue, 8);
+    tr.querySelector('.usdValue').textContent = `$${util.format(btcValue * usdRateValue, 4)}`;
+    tr.querySelector('.yenRate').textContent = `¥${util.separate(util.format(btcValue * yenRateValue, 0))}`;
   }
 }
 
