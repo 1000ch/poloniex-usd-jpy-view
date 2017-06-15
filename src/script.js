@@ -44,15 +44,8 @@ function initializeTable() {
   }
 }
 
-async function fetchJSON(url) {
-  const response = await fetch(url);
-  const json = await response.json();
-
-  return json;
-}
-
 async function renderAllRates() {
-  const rates = await fetchJSON('https://poloniex.com/public?command=returnTicker');
+  const rates = await util.fetchJSON('https://poloniex.com/public?command=returnTicker');
 
   for (const key of Object.keys(rates)) {
     if (key.match(/BTC_/)) {
@@ -64,7 +57,7 @@ async function renderAllRates() {
 }
 
 async function renderAllValues() {
-  const data = await fetchJSON('https://coincheck.com/api/ticker');
+  const data = await util.fetchJSON('https://coincheck.com/api/ticker');
 
   const yenRateValue = data.bid;
   const usdValue = Number(util.qs('#accountValue_usd').textContent.replace(',', ''));

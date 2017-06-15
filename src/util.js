@@ -26,4 +26,11 @@ function separate(number) {
   return String(number).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,');
 }
 
-module.exports = { qs, qsa, el, format, separate };
+async function fetchJSON(url) {
+  const response = await fetch(url);
+  const json = await response.json();
+
+  return json;
+}
+
+module.exports = { qs, qsa, el, format, separate, fetchJSON };
