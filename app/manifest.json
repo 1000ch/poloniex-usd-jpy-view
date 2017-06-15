@@ -1,17 +1,19 @@
 {
   "name": "Poloniex Yen View",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Add \"USD Value\", \"JPY Value\", \"BTC Rate\" columns into Poloniex Balances view.",
   "manifest_version": 2,
-  "content_scripts": [{
-    "js": [
-      "script.js"
-    ],
-    "matches": [
-      "https://poloniex.com/balances"
-    ],
-    "run_at": "document_start"
-  }],
+  "content_scripts": [
+    {
+      "js": [
+        "script.js"
+      ],
+      "matches": [
+        "https://poloniex.com/balances"
+      ],
+      "run_at": "document_start"
+    }
+  ],
   "permissions": [
     "https://coincheck.com/api/ticker",
     "https://poloniex.com/balances"
