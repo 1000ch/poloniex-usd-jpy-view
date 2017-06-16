@@ -1,16 +1,19 @@
-PROJECTNAME="Poloniex USD & JPY View"
+PROJECTNAME="Poloniex USD and JPY View"
 
-all: prelogue build archive epilogue
+all: prelogue clean build archive epilogue
 
 prelogue:
 	@echo ""
 	@echo ">>> $(PROJECTNAME) build started"
 	@echo ""
 
+clean: ./app/content_script.js ./app/background.js
+	@rm -rf ./app/content_script.js ./app/background.js
+
 build: src
 	@npm run build
 
-archive: ./app/script.js
+archive: ./app/content_script.js ./app/background.js
 	@zip pyv.zip -r ./app
 
 epilogue:
