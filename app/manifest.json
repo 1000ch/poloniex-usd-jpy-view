@@ -13,10 +13,14 @@
   "browser_action": {
     "default_title": "Poloniex USD & JPY View"
   },
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": false
+  },
   "content_scripts": [
     {
       "js": [
-        "script.js"
+        "content_script.js"
       ],
       "matches": [
         "https://poloniex.com/balances"
@@ -27,5 +31,6 @@
   "permissions": [
     "https://coincheck.com/api/ticker",
     "https://poloniex.com/balances"
-  ]
+  ],
+  "offline_enabled": false
 }
