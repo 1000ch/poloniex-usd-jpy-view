@@ -6,12 +6,14 @@
     "postversion": "git push && git push --tags",
     "build": "npm run build:cs && npm run build:bg",
     "build:cs": "browserify --outfile app/content_script.js src/content_script.js",
-    "build:bg": "browserify --outfile app/background.js src/background.js"
+    "build:bg": "browserify --outfile app/background.js src/background.js",
+    "minify": "babili app --out-dir app"
   },
   "dependencies": {
     "delay": "^2.0.0"
   },
   "devDependencies": {
+    "babili": "^0.1.3",
     "browserify": "^14.4.0"
   }
 }

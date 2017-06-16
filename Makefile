@@ -12,6 +12,7 @@ clean: ./app/content_script.js ./app/background.js
 
 build: src
 	@npm run build
+	@npm run minify
 
 archive: ./app/content_script.js ./app/background.js
 	@zip pyv.zip -r ./app
