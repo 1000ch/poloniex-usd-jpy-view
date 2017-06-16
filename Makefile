@@ -1,4 +1,4 @@
-PROJECTNAME="Poloniex Yen View"
+PROJECTNAME="Poloniex USD & JPY View"
 
 all: prelogue build archive epilogue
 

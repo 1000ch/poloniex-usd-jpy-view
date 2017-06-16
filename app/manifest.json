@@ -1,5 +1,5 @@
 {
-  "name": "Poloniex Yen View",
+  "name": "Poloniex USD & JPY View",
   "version": "0.4.0",
   "description": "Add \"USD Value\", \"JPY Value\", \"BTC Rate\" columns into Poloniex Balances view.",
   "manifest_version": 2,
@@ -9,6 +9,9 @@
     "48": "img/48.png",
     "64": "img/64.png",
     "128": "img/128.png"
+  },
+  "browser_action": {
+    "default_title": "Poloniex USD & JPY View"
   },
   "content_scripts": [
     {
