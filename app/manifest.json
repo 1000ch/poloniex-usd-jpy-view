@@ -31,6 +31,7 @@
     }
   ],
   "permissions": [
+    "background",
     "https://coincheck.com/api/ticker",
     "https://poloniex.com/balances"
   ],
