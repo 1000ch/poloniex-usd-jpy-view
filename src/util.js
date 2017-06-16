@@ -1,9 +1,9 @@
-function qs(selector) {
-  return document.querySelector(selector);
+function qs(selector, element = document) {
+  return element.querySelector(selector);
 }
 
-function qsa(selector) {
-  return document.querySelectorAll(selector);
+function qsa(selector, element = document) {
+  return element.querySelectorAll(selector);
 }
 
 function el(tagName, properties) {
@@ -14,6 +14,19 @@ function el(tagName, properties) {
   });
 
   return element;
+}
+
+function after(element, target) {
+  if (!element || !target) {
+    return;
+  }
+
+  const {
+    parentNode,
+    nextSibling
+  } = target;
+
+  parentNode.insertBefore(element, nextSibling);
 }
 
 function format(number, n) {
@@ -33,4 +46,12 @@ async function fetchJSON(url) {
   return json;
 }
 
-module.exports = { qs, qsa, el, format, separate, fetchJSON };
+module.exports = {
+  qs,
+  qsa,
+  el,
+  after,
+  format,
+  separate,
+  fetchJSON
+};

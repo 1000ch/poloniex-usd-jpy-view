@@ -1,86 +1,89 @@
 const delay = require('delay');
-const util = require('./util');
+const {
+  qs,
+  qsa,
+  el,
+  after,
+  format,
+  separate,
+  fetchJSON,
+} = require('./util');
 
 function initializeSummary() {
-  const div = util.el('div', { className: 'supressWrap' });
-  const span = util.el('span', { id: 'accountValue_yen' });
+  const div = el('div', { className: 'supressWrap' });
+  const span = el('span', { id: 'accountValue_yen' });
 
   div.appendChild(span);
-  util.qs('.supressWrap').appendChild(div);
+  qs('.supressWrap').appendChild(div);
 }
 
 function initializeTable() {
-  const header = util.qs('tr.header');
-  const valueHeader = util.qs('tr.header .value');
+  const header = qs('tr.header .value');
+  const cells = qsa('tr td.value', qs('#balancesTableBody'));
 
-  const btcRateHeader = util.el('th', {
+  after(el('th', {
     className: 'name sortable tablesorter-header tablesorter-headerUnSorted',
     textContent: 'BTC Rate'
-  });
-  const jpyValueHeader = util.el('th', {
+  }), header);
+
+  after(el('th', {
     className: 'name sortable tablesorter-header tablesorter-headerUnSorted',
     textContent: 'JPY Value'
-  });
-  const usdValueHeader = util.el('th', {
+  }), header);
+
+  after(el('th', {
     className: 'name sortable tablesorter-header tablesorter-headerUnSorted',
     textContent: 'USD Value'
-  });
-
-  header.insertBefore(btcRateHeader, valueHeader.nextSibling);
-  header.insertBefore(jpyValueHeader, valueHeader.nextSibling);
-  header.insertBefore(usdValueHeader, valueHeader.nextSibling);
-
-  const cells = util.qs('#balancesTableBody').querySelectorAll('tr td.value');
+  }), header);
 
   for (const cell of cells) {
-    const tr = cell.parentNode;
-    tr.insertBefore(util.el('td', { className: 'btcRate' }), cell.nextSibling);
-    tr.insertBefore(util.el('td', { className: 'yenRate' }), cell.nextSibling);
-    tr.insertBefore(util.el('td', { className: 'usdValue' }), cell.nextSibling);
+    after(el('td', { className: 'btcRate' }), cell);
+    after(el('td', { className: 'yenRate' }), cell);
+    after(el('td', { className: 'usdValue' }), cell);
   }
 }
 
 async function renderAllRates() {
-  const rates = await util.fetchJSON('https://poloniex.com/public?command=returnTicker');
+  const rates = await fetchJSON('https://poloniex.com/public?command=returnTicker');
 
   for (const key of Object.keys(rates)) {
     if (key.match(/BTC_/)) {
-      util.qs(`#balances_${key.replace('BTC_', '')}`).querySelector('.btcRate').textContent = rates[key]['last'];
+      qs('.btcRate', qs(`#balances_${key.replace('BTC_', '')}`)).textContent = rates[key]['last'];
     } else if (key.match(/USDT_BTC/)) {
-      util.qs('#balances_USDT').querySelector('.btcRate').textContent = util.format(1 / Number(rates[key]['last']), 8);
+      qs('.btcRate', qs('#balances_USDT')).textContent = format(1 / Number(rates[key]['last']), 8);
     }
   }
 }
 
 async function renderAllValues() {
-  const data = await util.fetchJSON('https://coincheck.com/api/ticker');
+  const data = await fetchJSON('https://coincheck.com/api/ticker');
 
   const yenRateValue = data.bid;
-  const usdValue = Number(util.qs('#accountValue_usd').textContent.replace(',', ''));
-  const btcValue = Number(util.qs('#accountValue_btc').textContent);
+  const usdValue = Number(qs('#accountValue_usd').textContent.replace(',', ''));
+  const btcValue = Number(qs('#accountValue_btc').textContent);
   const usdRateValue = Number(usdValue / btcValue);
 
-  util.qs('#accountValue_yen').textContent = ` / ¥${util.separate(util.format(Number(btcValue * yenRateValue), 0))} YEN`;
+  qs('#accountValue_yen').textContent = ` / ¥${separate(format(Number(btcValue * yenRateValue), 0))} YEN`;
 
-  const trList = util.qsa('#balancesTableBody tr');
+  const trList = qsa('#balancesTableBody tr');
   for (const tr of trList) {
-    const coin = tr.querySelector('.coin');
+    const coin = qs('.coin', tr);
 
     if (coin === null) {
       continue;
     }
 
     if (coin.textContent === 'BTC') {
-      tr.querySelector('.btcRate').textContent = 1;
+      qs('.btcRate', tr).textContent = 1;
     }
 
-    const balanceValue = Number(tr.querySelector('.balance').textContent);
-    const btcRateValue = Number(tr.querySelector('.btcRate').textContent);
+    const balanceValue = Number(qs('.balance', tr).textContent);
+    const btcRateValue = Number(qs('.btcRate', tr).textContent);
     const btcValue = balanceValue * btcRateValue;
 
-    tr.querySelector('.value').textContent = util.format(btcValue, 8);
-    tr.querySelector('.usdValue').textContent = `$${util.format(btcValue * usdRateValue, 4)}`;
-    tr.querySelector('.yenRate').textContent = `¥${util.separate(util.format(btcValue * yenRateValue, 0))}`;
+    qs('.value', tr).textContent = format(btcValue, 8);
+    qs('.usdValue', tr).textContent = `$${format(btcValue * usdRateValue, 4)}`;
+    qs('.yenRate', tr).textContent = `¥${separate(format(btcValue * yenRateValue, 0))}`;
   }
 }
 
