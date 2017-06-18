@@ -46,6 +46,18 @@ async function fetchJSON(url) {
   return json;
 }
 
+function loadData(keys) {
+  return new Promise(resolve => {
+    chrome.storage.sync.get(keys, resolve);
+  });
+}
+
+function saveData(data) {
+  return new Promise(resolve => {
+    chrome.storage.sync.set(data, resolve);
+  });
+}
+
 module.exports = {
   qs,
   qsa,
@@ -53,5 +65,7 @@ module.exports = {
   insertAfter,
   format,
   separate,
-  fetchJSON
+  fetchJSON,
+  loadData,
+  saveData
 };
