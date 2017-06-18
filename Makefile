@@ -15,7 +15,7 @@ build: src
 	@npm run minify
 
 archive: ./app/content_script.js ./app/background.js
-	@zip pyv.zip -r ./app
+	@zip archive.zip -r ./app
 
 epilogue:
 	@echo ""
