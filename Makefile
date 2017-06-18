@@ -7,14 +7,14 @@ prelogue:
 	@echo ">>> $(PROJECTNAME) build started"
 	@echo ""
 
-clean: ./app/content_script.js ./app/background.js
-	@rm -rf ./app/content_script.js ./app/background.js
+clean: ./app/content_script.js ./app/background.js ./app/options.js
+	@rm -rf ./app/*.js
 
 build: src
 	@npm run build
 	@npm run minify
 
-archive: ./app/content_script.js ./app/background.js
+archive: ./app/content_script.js ./app/background.js ./app/options.js
 	@zip archive.zip -r ./app
 
 epilogue:
