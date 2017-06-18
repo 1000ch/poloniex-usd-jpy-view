@@ -4,9 +4,10 @@
   "scripts": {
     "version": "node version.js && git add app/manifest.json",
     "postversion": "git push && git push --tags",
-    "build": "npm run build:cs && npm run build:bg",
+    "build": "npm run build:cs && npm run build:bg && npm run build:op",
     "build:cs": "browserify --outfile app/content_script.js src/content_script.js",
     "build:bg": "browserify --outfile app/background.js src/background.js",
+    "build:op": "browserify --outfile app/options.js src/options.js",
     "minify": "babili app --out-dir app"
   },
   "dependencies": {

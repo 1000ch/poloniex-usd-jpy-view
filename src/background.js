@@ -1,3 +1,9 @@
+const { saveData } = require('./util');
+const {
+  DISPLAY_USD_VALUE,
+  DISPLAY_JPY_VALUE
+} = require('./constant');
+
 chrome.browserAction.onClicked.addListener(() => {
   chrome.tabs.getAllInWindow(undefined, tabs => {
     for (const tab of tabs) {
@@ -20,4 +26,13 @@ chrome.browserAction.onClicked.addListener(() => {
       active: true
     });
   });
+});
+
+chrome.runtime.onInstalled.addListener(details => {
+  if (details.reason === 'install') {
+    saveData({
+      [DISPLAY_USD_VALUE]: true,
+      [DISPLAY_JPY_VALUE]: true
+    });
+  }
 });

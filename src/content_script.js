@@ -7,7 +7,12 @@ const {
   format,
   separate,
   fetchJSON,
+  loadData
 } = require('./util');
+const {
+  DISPLAY_USD_VALUE,
+  DISPLAY_JPY_VALUE
+} = require('./constant');
 
 function initializeSummary() {
   const div = el('div', { className: 'supressWrap' });
@@ -17,7 +22,7 @@ function initializeSummary() {
   qs('.supressWrap').appendChild(div);
 }
 
-function initializeTable() {
+function initializeTable(usd, jpy) {
   const header = qs('tr.header .value');
   const cells = qsa('tr td.value', qs('#balancesTableBody'));
 
@@ -26,20 +31,30 @@ function initializeTable() {
     textContent: 'BTC Rate'
   }), header);
 
-  insertAfter(el('th', {
-    className: 'name sortable tablesorter-header tablesorter-headerUnSorted',
-    textContent: 'JPY Value'
-  }), header);
+  if (jpy) {
+    insertAfter(el('th', {
+      className: 'name sortable tablesorter-header tablesorter-headerUnSorted',
+      textContent: 'JPY Value'
+    }), header);
+  }
 
-  insertAfter(el('th', {
-    className: 'name sortable tablesorter-header tablesorter-headerUnSorted',
-    textContent: 'USD Value'
-  }), header);
+  if (usd) {
+    insertAfter(el('th', {
+      className: 'name sortable tablesorter-header tablesorter-headerUnSorted',
+      textContent: 'USD Value'
+    }), header);
+  }
 
   for (const cell of cells) {
     insertAfter(el('td', { className: 'btcRate' }), cell);
-    insertAfter(el('td', { className: 'jpyValue' }), cell);
-    insertAfter(el('td', { className: 'usdValue' }), cell);
+
+    if (jpy) {
+      insertAfter(el('td', { className: 'jpyValue' }), cell);
+    }
+
+    if (usd) {
+      insertAfter(el('td', { className: 'usdValue' }), cell);
+    }
   }
 }
 
@@ -56,7 +71,7 @@ async function renderAllRates() {
   }
 }
 
-async function renderAllValues() {
+async function renderAllValues(usd, jpy) {
   const data = await fetchJSON('https://coincheck.com/api/ticker');
 
   const yenRateValue = data.bid;
@@ -83,25 +98,38 @@ async function renderAllValues() {
     const btcValue = balanceValue * btcRateValue;
 
     qs('.value', tr).textContent = format(btcValue, 8);
-    qs('.usdValue', tr).textContent = `$${format(btcValue * usdRateValue, 4)}`;
-    qs('.jpyValue', tr).textContent = `¥${separate(format(btcValue * yenRateValue, 0))}`;
+
+    if (usd) {
+      qs('.usdValue', tr).textContent = `$${format(btcValue * usdRateValue, 4)}`;
+    }
+
+    if (jpy) {
+      qs('.jpyValue', tr).textContent = `¥${separate(format(btcValue * yenRateValue, 0))}`;
+    }
   }
 }
 
-async function loopRender() {
+async function loopRender(usd, jpy) {
   try {
     await delay(5000);
     await renderAllRates();
-    await renderAllValues();
+    await renderAllValues(usd, jpy);
   } finally {
-    return loopRender();
+    return loopRender(usd, jpy);
   }
 }
 
 async function main() {
+  const data = await loadData([
+    DISPLAY_USD_VALUE,
+    DISPLAY_JPY_VALUE
+  ]);
+  const usd = data[DISPLAY_USD_VALUE];
+  const jpy = data[DISPLAY_JPY_VALUE];
+
   initializeSummary();
-  initializeTable();
-  loopRender();
+  initializeTable(usd, jpy);
+  loopRender(usd, jpy);
 }
 
 document.addEventListener('DOMContentLoaded', main);
