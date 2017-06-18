@@ -16,7 +16,7 @@ function el(tagName, properties) {
   return element;
 }
 
-function after(element, target) {
+function insertAfter(element, target) {
   if (!element || !target) {
     return;
   }
@@ -50,7 +50,7 @@ module.exports = {
   qs,
   qsa,
   el,
-  after,
+  insertAfter,
   format,
   separate,
   fetchJSON

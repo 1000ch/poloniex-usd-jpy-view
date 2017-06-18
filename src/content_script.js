@@ -3,7 +3,7 @@ const {
   qs,
   qsa,
   el,
-  after,
+  insertAfter,
   format,
   separate,
   fetchJSON,
@@ -21,36 +21,37 @@ function initializeTable() {
   const header = qs('tr.header .value');
   const cells = qsa('tr td.value', qs('#balancesTableBody'));
 
-  after(el('th', {
+  insertAfter(el('th', {
     className: 'name sortable tablesorter-header tablesorter-headerUnSorted',
     textContent: 'BTC Rate'
   }), header);
 
-  after(el('th', {
+  insertAfter(el('th', {
     className: 'name sortable tablesorter-header tablesorter-headerUnSorted',
     textContent: 'JPY Value'
   }), header);
 
-  after(el('th', {
+  insertAfter(el('th', {
     className: 'name sortable tablesorter-header tablesorter-headerUnSorted',
     textContent: 'USD Value'
   }), header);
 
   for (const cell of cells) {
-    after(el('td', { className: 'btcRate' }), cell);
-    after(el('td', { className: 'yenRate' }), cell);
-    after(el('td', { className: 'usdValue' }), cell);
+    insertAfter(el('td', { className: 'btcRate' }), cell);
+    insertAfter(el('td', { className: 'yenRate' }), cell);
+    insertAfter(el('td', { className: 'usdValue' }), cell);
   }
 }
 
 async function renderAllRates() {
   const rates = await fetchJSON('https://poloniex.com/public?command=returnTicker');
+  const coins = Object.keys(rates);
 
-  for (const key of Object.keys(rates)) {
-    if (key.match(/BTC_/)) {
-      qs('.btcRate', qs(`#balances_${key.replace('BTC_', '')}`)).textContent = rates[key]['last'];
-    } else if (key.match(/USDT_BTC/)) {
-      qs('.btcRate', qs('#balances_USDT')).textContent = format(1 / Number(rates[key]['last']), 8);
+  for (const coin of coins) {
+    if (coin.match(/BTC_/)) {
+      qs('.btcRate', qs(`#balances_${coin.replace('BTC_', '')}`)).textContent = rates[coin]['last'];
+    } else if (coin.match(/USDT_BTC/)) {
+      qs('.btcRate', qs('#balances_USDT')).textContent = format(1 / Number(rates[coin]['last']), 8);
     }
   }
 }

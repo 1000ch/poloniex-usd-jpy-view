@@ -12,7 +12,7 @@ chrome.browserAction.onClicked.addListener(() => {
       chrome.tabs.update(tab.id, {
         active: true
       });
-      break;
+      return;
     }
 
     chrome.tabs.create({
