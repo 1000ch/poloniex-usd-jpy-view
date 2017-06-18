@@ -38,7 +38,7 @@ function initializeTable() {
 
   for (const cell of cells) {
     insertAfter(el('td', { className: 'btcRate' }), cell);
-    insertAfter(el('td', { className: 'yenRate' }), cell);
+    insertAfter(el('td', { className: 'jpyValue' }), cell);
     insertAfter(el('td', { className: 'usdValue' }), cell);
   }
 }
@@ -84,7 +84,7 @@ async function renderAllValues() {
 
     qs('.value', tr).textContent = format(btcValue, 8);
     qs('.usdValue', tr).textContent = `$${format(btcValue * usdRateValue, 4)}`;
-    qs('.yenRate', tr).textContent = `¥${separate(format(btcValue * yenRateValue, 0))}`;
+    qs('.jpyValue', tr).textContent = `¥${separate(format(btcValue * yenRateValue, 0))}`;
   }
 }
 
