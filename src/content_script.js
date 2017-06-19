@@ -124,8 +124,8 @@ async function main() {
     DISPLAY_USD_VALUE,
     DISPLAY_JPY_VALUE
   ]);
-  const usd = data[DISPLAY_USD_VALUE];
-  const jpy = data[DISPLAY_JPY_VALUE];
+  const usd = data[DISPLAY_USD_VALUE] !== undefined ? data[DISPLAY_USD_VALUE] : true;
+  const jpy = data[DISPLAY_JPY_VALUE] !== undefined ? data[DISPLAY_JPY_VALUE] : true;
 
   initializeSummary();
   initializeTable(usd, jpy);

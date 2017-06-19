@@ -16,13 +16,25 @@ async function main() {
     DISPLAY_USD_VALUE,
     DISPLAY_JPY_VALUE
   ]);
-  usd.checked = data[DISPLAY_USD_VALUE];
-  jpy.checked = data[DISPLAY_JPY_VALUE];
+
+  if (data[DISPLAY_USD_VALUE] === undefined &&
+      data[DISPLAY_JPY_VALUE] === undefined) {
+    await saveData({
+      [DISPLAY_USD_VALUE]: true,
+      [DISPLAY_JPY_VALUE]: true
+    });
+
+    usd.checked = true;
+    jpy.checked = true;
+  } else {
+    usd.checked = data[DISPLAY_USD_VALUE];
+    jpy.checked = data[DISPLAY_JPY_VALUE];
+  }
 
   function onChange() {
     saveData({
       [DISPLAY_USD_VALUE]: usd.checked,
-      [DISPLAY_JPY_VALUE]: jpy.checked,
+      [DISPLAY_JPY_VALUE]: jpy.checked
     });
   }
 
